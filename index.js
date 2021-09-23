@@ -16,7 +16,7 @@ bot.command('start', (ctx) => ctx.reply('hello!'));
 bot.command('about', async (ctx) => {
     const poolMembers = await api.getDelegators(poolAddress);
     const { size } = await api.getPool(poolAddress)
-    ctx.replyWithMarkdown(`*Imperial Pool*\n- Pool Address: _${poolAddress}_\n- Pool Size: ${size}\n- Pool Members: ${poolMembers.length}\n\nMy node:\n- Run on Digital Ocean (Singapore)\n- Auto node update (idena-manager)\n- 100% uptime.\n- Experienced node operator.\n- Payment on Validation day.`)
+    ctx.replyWithMarkdown(`*Imperial Pool*\n- Pool Address: _${poolAddress}_\n- Pool Size: ${size}\n- Pool Members: ${poolMembers.length}\n\nMy node:\n- Run on Digital Ocean (Singapore)\n- Auto node update (idena-manager)\n- 100% uptime, Monitored 24/7\n- Experienced node operator\n- Payment on Validation day`)
 });
 bot.command('members', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Members`);
