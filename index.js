@@ -13,6 +13,10 @@ const bot = new Telegraf(botToken);
 bot.catch((error) => console.log('bot error', error));
 
 bot.command('start', (ctx) => ctx.reply('hello!'));
+bot.command('about', async (ctx) => {
+    const { size } = await api.getPool(poolAddress)
+    ctx.replyWithMarkdown(`*Imperial Pool*\n\nPool Address: ${poolAddress}\nPool Size: ${size}`)
+});
 bot.command('members', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Members`);
     const poolMembers = await api.getDelegators(poolAddress);
@@ -24,7 +28,7 @@ bot.command('members', async (ctx) => {
 bot.command('epoch', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Epoch`);
     const next = await api.getLastEpoch();
-    const text = `Validasi ke ${next.epoch} dilaksanakan pada ${moment(next.validationTime).tz('Asia/Jakarta').format('LLL')} WIB`;
+    const text = `Validasi ke _${next.epoch}_ dilaksanakan pada ${moment(next.validationTime).tz('Asia/Jakarta').format('LLL')} WIB`;
     ctx.replyWithMarkdown(text);
 });
 
@@ -41,13 +45,13 @@ bot.command('rewards', async (ctx) => {
         member.staked = staked.toFixed(3)
     }
     const content = poolMembers.map((member, idx) => `${idx + 1}. [${member.address}](https://scan.idena.io/address/${member.address})\n💵 Reward: ${member.total} ($${parseFloat(member.total * usd).toFixed(2)})\n💰 Staked: ${member.staked} ($${parseFloat(member.staked * usd).toFixed(2)})\n`)
-    ctx.replyWithMarkdown(`**Hasil Validasi ke ${poolMembers[0].epoch}**: \n${content.join(',').replace(/,/g, '')}`, { disable_web_page_preview: true })
+    ctx.replyWithMarkdown(`*Hasil Validasi ke ${poolMembers[0].epoch}*: \n${content.join(',').replace(/,/g, '')}`, { disable_web_page_preview: true })
 });
 
 bot.command('price', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Price`);
     const { idena: { usd, usd_24h_change, idr, idr_24h_change } } = await api.getIdenaPrice();
-    const text = `Price of IDENA ([CoinGecko](https://www.coingecko.com/en/coins/idena))\n\n\`USD: $${usd}\n24H change: ${usd_24h_change.toFixed(2)}%\n\nIDR: Rp.${idr}\n24H change: ${idr_24h_change.toFixed(2)}%\``;
+    const text = `Price of *IDENA* ([CoinGecko](https://www.coingecko.com/en/coins/idena))\n\n\`USD: $${usd}\n24H change: ${usd_24h_change.toFixed(2)}%\n\nIDR: Rp.${idr}\n24H change: ${idr_24h_change.toFixed(2)}%\``;
     ctx.replyWithMarkdown(text, { disable_web_page_preview: true });
 });
 
