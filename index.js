@@ -39,7 +39,7 @@ bot.command('rewards', async (ctx) => {
         member.total = (staked * 4).toFixed(3)
         member.staked = staked.toFixed(3)
     }
-    const content = poolMembers.map((member, idx) => `${idx + 1}. [${member.address}](https://scan.idena.io/address/${member.address})\n💵 Reward: ${member.total} (Rp.${parseFloat(member.total * idr).toFixed(3)} / $${parseFloat(member.total * usd).toFixed(3)})\n💰 Staked: ${member.staked} (Rp.${parseFloat(member.staked * idr).toFixed(3)} / $${parseFloat(member.staked * usd).toFixed(3)})\n`)
+    const content = poolMembers.map((member, idx) => `${idx + 1}. [${member.address}](https://scan.idena.io/address/${member.address})\n💵 Reward: ${member.total} ($${parseFloat(member.total * usd).toFixed(2)})\n💰 Staked: ${member.staked} ($${parseFloat(member.staked * usd).toFixed(2)})\n`)
     ctx.replyWithMarkdown(`**Hasil Validasi ke ${poolMembers[0].epoch}**: \n${content.join(',').replace(',', '')}`, { disable_web_page_preview: true })
 });
 
