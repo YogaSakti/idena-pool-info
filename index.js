@@ -14,8 +14,9 @@ bot.catch((error) => console.log('bot error', error));
 
 bot.command('start', (ctx) => ctx.reply('hello!'));
 bot.command('about', async (ctx) => {
+    const poolMembers = await api.getDelegators(poolAddress);
     const { size } = await api.getPool(poolAddress)
-    ctx.replyWithMarkdown(`*Imperial Pool*\n\nPool Address: ${poolAddress}\nPool Size: ${size}`)
+    ctx.replyWithMarkdown(`*Imperial Pool*\n\nPool Address: ${poolAddress}\nPool Size: ${size}\nPool Members: ${poolMembers.length}`)
 });
 bot.command('members', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Members`);
