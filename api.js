@@ -41,6 +41,7 @@ const post = (base, endpoint, authorization, body) => fetch(base + endpoint, {
     .catch((err) => err)
 
 const getIdentity = (address) => get(baseIdena, `api/identity/${address}`) 
+const getPool = (address) => get(baseIdena, `api/pool/${address}`) 
 const getDelegators = (address) => get(baseIdena, `api/pool/${address}/delegators?limit=30`) 
 const getEpochRewards = (address) => get(baseIdena, `api/identity/${address}/epochrewards?limit=30`)
 const getPenalties = (address) => get(baseIdena, `api/identity/${address}/penalties?limit=30`)
@@ -58,6 +59,7 @@ module.exports = {
     get,
     post,
     getIdentity,
+    getPool,
     getDelegators,
     getEpochRewards,
     getPenalties,
