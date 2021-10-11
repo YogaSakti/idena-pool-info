@@ -35,18 +35,31 @@ bot.command('epoch', async (ctx) => {
 
 bot.command('rewards', async (ctx) => {
     console.log(`${ctx.update.message?.from?.username || ctx.update.message?.from?.first_name || ctx.update.message?.from?.last_name} > Reward`);
-    const poolMembers = await api.getDelegators(poolAddress);
+    const [last] = await api.getDelegatorTotalRewards(poolAddress)
+    const poolRewards = await api.getDelegatorRewards(last.epoch, poolAddress);
     const { idena: { usd } } = await api.getIdenaPrice();
-    for (let i = 0; i < poolMembers.length; i++) {
-        const member = poolMembers[i];
-        const rewards = await api.getEpochRewards(member.address);
-        const staked = rewards[0].rewards.reduce((n, { stake }) => parseFloat(n) + parseFloat(stake), 0);
-        member.epoch = rewards[0].epoch
-        member.total = (staked * 4).toFixed(3)
-        member.staked = staked.toFixed(3)
+
+    let content = [];
+    for (let i = 0; i < poolRewards.length; i++) {
+        const reward = poolRewards[i];
+        const total = reward.rewards.reduce((n, { balance }) => parseFloat(n) + parseFloat(balance), 0);
+        const staked = total / 4
+        const { delegatorAddress, prevState, state } = reward
+        const text = `${i + 1}. [${delegatorAddress}](https://scan.idena.io/address/${delegatorAddress})\n👤 Status: ${prevState == state ? state : `${prevState} => ${state}`}\n🧾 Total: ${(total + staked).toFixed(2)} ($${parseFloat((total + staked) * usd).toFixed(2)})\n💰 Staked: ${staked.toFixed(2)} ($${parseFloat(staked * usd).toFixed(2)})\n💵 Reward: ${total.toFixed(2)} ($${parseFloat(total * usd).toFixed(2)})`
+        content = [...content, text]
     }
-    const content = poolMembers.map((member, idx) => `${idx + 1}. [${member.address}](https://scan.idena.io/address/${member.address})\n💵 Reward: ${member.total} ($${parseFloat(member.total * usd).toFixed(2)})\n💰 Staked: ${member.staked} ($${parseFloat(member.staked * usd).toFixed(2)})\n`)
-    ctx.replyWithMarkdown(`*Hasil Validasi ke ${poolMembers[0].epoch}*: \n${content.join(',').replace(/,/g, '')}`, { disable_web_page_preview: true })
+    ctx.replyWithMarkdown(`*Hasil Validasi ke ${last.epoch}*: \n${content.join(',').replace(/,/g, '\n')}`, { disable_web_page_preview: true })
+
+    // for (let i = 0; i < poolRewards.length; i++) {
+    //     const reward = poolRewards[i];
+    //     const staked = rewards[0].rewards.reduce((n, { stake }) => parseFloat(n) + parseFloat(stake), 0);
+    //     member.epoch = rewards[0].epoch
+    //     member.total = (staked * 4).toFixed(3)
+    //     member.staked = staked.toFixed(3)
+    // }
+    // const content = poolMembers.map((member, idx) => `${idx + 1}. [${member.address}](https://scan.idena.io/address/${member.address})\n💵 Reward: ${member.total} ($${parseFloat(member.total * usd).toFixed(2)})\n💰 Staked: ${member.staked} ($${parseFloat(member.staked * usd).toFixed(2)})\n`)
+    // ctx.replyWithMarkdown(`*Hasil Validasi ke ${poolMembers[0].epoch}*: \n${content.join(',').replace(/,/g, '')}`, { disable_web_page_preview: true })
+    
 });
 
 bot.command('price', async (ctx) => {
