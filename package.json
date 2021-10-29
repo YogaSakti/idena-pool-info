@@ -4,7 +4,7 @@
   "description": "idena pool bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "pm2 start ecosystem.config.js"
   },
   "author": "yogs",
   "license": "MIT",
